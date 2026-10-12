@@ -33,7 +33,7 @@ var statsCmd = &cobra.Command{
 		fmt.Fprintf(cmd.OutOrStdout(), "specs: %d   requirements: %d   open ACs: %d   open questions: %d (%d blocking)\n",
 			out.SpecsTotal, out.ReqsTotal, out.OpenACs, out.OpenQs, out.BlockingQs)
 		for _, kv := range sortedMap(out.ByStatus) {
-			fmt.Fprintf(cmd.OutOrStdout(), "  %s: %d\n", kv.K, kv.V)
+			fmt.Fprintf(cmd.OutOrStdout(), "  %s: %d\n", badge(kv.K), kv.V)
 		}
 		return nil
 	},

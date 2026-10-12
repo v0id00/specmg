@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `index [--write]` — print or write `specs/INDEX.md`
 - `import` — convert legacy sdd-format spec files to specmg format in place
 - `completion` — shell completion (cobra built-in)
+- Pretty output mode: status badges (🟡🔵🟢🟣✅⚫🔴) and item icons (🔹 ☐/☑ ❓❗)
+  on human output; `--plain` disables, `--json` never contains icons
 
 ## [0.1.0] - 2026-10-12
 

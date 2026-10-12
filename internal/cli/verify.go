@@ -21,6 +21,10 @@ var verifyCmd = &cobra.Command{
 			return err
 		}
 		ran, failed := 0, 0
+		passIcon, failIcon := "PASS", "FAIL"
+		if !flagPlain {
+			passIcon, failIcon = "✅ PASS", "❌ FAIL"
+		}
 		for i := range s.Criteria {
 			c := &s.Criteria[i]
 			if c.Done {
@@ -37,14 +41,14 @@ var verifyCmd = &cobra.Command{
 			out, code, err := runShell(command)
 			if err != nil || code != 0 {
 				failed++
-				fmt.Fprintf(cmd.OutOrStdout(), "FAIL AC-%d: %s (exit %d)\n", c.Num, command, code)
+				fmt.Fprintf(cmd.OutOrStdout(), "%s AC-%d: %s (exit %d)\n", failIcon, c.Num, command, code)
 				if flagVerbose {
 					fmt.Fprintln(cmd.OutOrStdout(), strings.TrimSpace(out))
 				}
 				continue
 			}
 			c.Done = true
-			fmt.Fprintf(cmd.OutOrStdout(), "PASS AC-%d: %s\n", c.Num, command)
+			fmt.Fprintf(cmd.OutOrStdout(), "%s AC-%d: %s\n", passIcon, c.Num, command)
 		}
 		if ran == 0 {
 			fmt.Fprintln(cmd.OutOrStdout(), "nothing to verify")

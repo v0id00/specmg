@@ -99,7 +99,11 @@ var qListCmd = &cobra.Command{
 			default:
 				state = "open"
 			}
-			rows[i] = []string{fmt.Sprintf("Q-%d", q.Num), state, q.Text}
+			marker := state
+			if !flagPlain && !flagJSON {
+				marker = output.QuestionIcon(q.Blocking, q.Resolved) + " " + state
+			}
+			rows[i] = []string{fmt.Sprintf("Q-%d", q.Num), marker, q.Text}
 		}
 		return output.Table(cmd.OutOrStdout(), []string{"ID", "STATE", "TEXT"}, rows)
 	},

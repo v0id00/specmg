@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/v0id00/specmg/internal/output"
 	"github.com/v0id00/specmg/internal/spec"
 	"github.com/v0id00/specmg/internal/store"
 )
@@ -14,6 +15,7 @@ var (
 	flagJSON    bool
 	flagVerbose bool
 	flagDryRun  bool
+	flagPlain   bool
 	flagRoot    string
 	flagDir     = "specs"
 )
@@ -29,6 +31,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&flagJSON, "json", false, "JSON output")
 	rootCmd.PersistentFlags().BoolVarP(&flagVerbose, "verbose", "v", false, "verbose logging")
 	rootCmd.PersistentFlags().BoolVar(&flagDryRun, "dry-run", false, "print changes without writing")
+	rootCmd.PersistentFlags().BoolVar(&flagPlain, "plain", false, "disable icons/status badges in human output")
 	rootCmd.PersistentFlags().StringVar(&flagRoot, "root", "", "repo root (default: search upwards for specs/)")
 }
 
@@ -73,4 +76,23 @@ func saveOrDry(root string, s *spec.Spec) error {
 		return nil
 	}
 	return store.Save(root, flagDir, s)
+}
+
+// badge wraps a status with its icon unless --plain or --json is set.
+func badge(status string) string {
+	if flagPlain || flagJSON {
+		return status
+	}
+	return output.StatusBadge(status)
+}
+
+// check renders a criterion checkbox icon unless --plain/--json.
+func check(done bool) string {
+	if flagPlain || flagJSON {
+		if done {
+			return "x"
+		}
+		return " "
+	}
+	return output.CriterionIcon(done)
 }

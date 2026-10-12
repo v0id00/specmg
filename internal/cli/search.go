@@ -42,6 +42,10 @@ var searchCmd = &cobra.Command{
 			return strings.Contains(hay, needle)
 		}
 		var hits []searchHit
+		icon := func(s string) string { return s }
+		if !flagPlain && !flagJSON {
+			icon = func(s string) string { return "🔹 " + s }
+		}
 		for _, s := range all {
 			ref := s.FM.ID + "-" + s.FM.Slug
 			if contains(s.FM.Title) {
@@ -52,22 +56,35 @@ var searchCmd = &cobra.Command{
 			}
 			for _, r := range s.Reqs {
 				if contains(r.Text) {
-					hits = append(hits, searchHit{ref, s.FM.Status, fmt.Sprintf("REQ-%d", r.Num), r.Text})
+					hits = append(hits, searchHit{ref, s.FM.Status, icon(fmt.Sprintf("REQ-%d", r.Num)), r.Text})
 				}
 			}
 			for _, c := range s.Criteria {
 				if contains(c.Text) {
-					hits = append(hits, searchHit{ref, s.FM.Status, fmt.Sprintf("AC-%d", c.Num), c.Text})
+					id := fmt.Sprintf("AC-%d", c.Num)
+					if !flagPlain && !flagJSON {
+						id = output.CriterionIcon(c.Done) + " " + id
+					}
+					hits = append(hits, searchHit{ref, s.FM.Status, id, c.Text})
 				}
 			}
 			for _, q := range s.Questions {
 				if contains(q.Text) {
-					hits = append(hits, searchHit{ref, s.FM.Status, fmt.Sprintf("Q-%d", q.Num), q.Text})
+					id := fmt.Sprintf("Q-%d", q.Num)
+					if !flagPlain && !flagJSON {
+						id = output.QuestionIcon(q.Blocking, q.Resolved) + " " + id
+					}
+					hits = append(hits, searchHit{ref, s.FM.Status, id, q.Text})
 				}
 			}
 		}
 		if flagJSON {
 			return output.JSON(cmd.OutOrStdout(), hits)
+		}
+		if !flagPlain {
+			for i := range hits {
+				hits[i].Status = badge(hits[i].Status)
+			}
 		}
 		if len(hits) == 0 {
 			fmt.Fprintln(cmd.OutOrStdout(), "no matches")
@@ -75,7 +92,7 @@ var searchCmd = &cobra.Command{
 		}
 		var rows [][]string
 		for _, h := range hits {
-			rows = append(rows, []string{h.Ref, h.Status, h.Item, h.Text})
+			rows = append(rows, []string{h.Ref, badge(h.Status), h.Item, h.Text})
 		}
 		return output.Table(cmd.OutOrStdout(), []string{"SPEC", "STATUS", "ITEM", "TEXT"}, rows)
 	},

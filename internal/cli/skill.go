@@ -49,7 +49,7 @@ const skillMarkdown = "---\n" +
 	"- **import** — Convert legacy sdd-format specs to specmg format\n" +
 	"- **init** — Create the specs/ directory if missing\n" +
 	"- **version** — Print version\n\n" +
-	"All mutating commands support dry-run mode (--dry-run). Most commands support --json for machine-readable output.\n"
+	"All mutating commands support dry-run mode (--dry-run). Most commands support --json for machine-readable output. Human output uses status badges and item icons; pass --plain for icon-free output (and --json never contains icons).\n"
 
 func init() {
 	rootCmd.AddCommand(skillCmd)

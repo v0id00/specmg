@@ -123,11 +123,7 @@ var acListCmd = &cobra.Command{
 		}
 		rows := make([][]string, len(s.Criteria))
 		for i, c := range s.Criteria {
-			done := " "
-			if c.Done {
-				done = "x"
-			}
-			rows[i] = []string{fmt.Sprintf("AC-%d", c.Num), done, c.Text}
+			rows[i] = []string{fmt.Sprintf("AC-%d", c.Num), check(c.Done), c.Text}
 		}
 		return output.Table(cmd.OutOrStdout(), []string{"ID", "DONE", "TEXT"}, rows)
 	},

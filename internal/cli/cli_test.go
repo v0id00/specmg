@@ -10,14 +10,24 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// resetFlag restores a flag to its default between test invocations.
+// Slice flags must be set to "" (DefValue "[]" would parse as the literal ["[]"]).
+func resetFlag(f *pflag.Flag) {
+	if f.Value.Type() == "stringSlice" {
+		f.Value.Set("")
+		return
+	}
+	f.Value.Set(f.DefValue)
+}
+
 // run executes the root command with args, returning combined output.
 func run(t *testing.T, args ...string) (string, error) {
 	t.Helper()
 	// cobra flag vars persist across Execute calls in one process — reset everything
-	rootCmd.PersistentFlags().VisitAll(func(f *pflag.Flag) { f.Value.Set(f.DefValue) })
+	rootCmd.PersistentFlags().VisitAll(resetFlag)
 	var visitAll func(*cobra.Command)
 	visitAll = func(c *cobra.Command) {
-		c.Flags().VisitAll(func(f *pflag.Flag) { f.Value.Set(f.DefValue) })
+		c.Flags().VisitAll(resetFlag)
 		for _, sub := range c.Commands() {
 			visitAll(sub)
 		}

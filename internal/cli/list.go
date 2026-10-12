@@ -107,7 +107,7 @@ var listCmd = &cobra.Command{
 		var rows [][]string
 		for _, it := range items {
 			rows = append(rows, []string{
-				it.ID, it.Status, it.Title, it.Owner,
+				it.ID, badge(it.Status), it.Title, it.Owner,
 				fmt.Sprintf("%d", it.Reqs),
 				fmt.Sprintf("%d", it.OpenACs),
 				fmt.Sprintf("%d", it.OpenQuestions),

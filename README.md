@@ -154,8 +154,14 @@ Prose, preserved verbatim.
 | `specmg version` | Print version |
 
 **Global flags**: `--json` (machine-readable output on every command),
-`--dry-run` (all writes print what they would do instead), `--root <dir>`,
-`-v`.
+`--dry-run` (all writes print what they would do instead), `--plain` (disable
+icons/status badges), `--root <dir>`, `-v`.
+
+**Pretty output**: human output is icon-decorated by default — status badges
+(🟡 draft, 🔵 in_review, 🟢 approved, 🟣 implemented, ✅ verified, ⚫ superseded,
+🔴 rejected), requirement 🔹, checkboxes ☐/☑, questions ❓ open / ❗ blocking /
+✅ resolved, verify ✅ PASS / ❌ FAIL. `--plain` turns all of it off; `--json`
+never contains icons.
 
 **Exit codes**: `0` ok · `1` error (including lint problems) · `2` usage error.
 
