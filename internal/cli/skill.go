@@ -41,6 +41,12 @@ const skillMarkdown = "---\n" +
 	"- **stats [--json]** — Aggregate statistics across specs\n" +
 	"- **tree [<ref>]** — Show links as a tree; with arg show backlinks too\n" +
 	"- **evidence <ref> --ac <AC-N> --cmd <c>** — Run shell command, record evidence\n" +
+	"- **verify <ref>** — Run backticked commands in all open ACs; only exit-0 commands get checked\n" +
+	"- **log <ref> \"<decision>\" [--rationale r]** — Append a dated Decision Log row\n" +
+	"- **search <text>** — Search titles, purposes and item texts\n" +
+	"- **export [--csv]** — Flat rows of every spec and item\n" +
+	"- **index [--write]** — Print or write specs/INDEX.md\n" +
+	"- **import** — Convert legacy sdd-format specs to specmg format\n" +
 	"- **init** — Create the specs/ directory if missing\n" +
 	"- **version** — Print version\n\n" +
 	"All mutating commands support dry-run mode (--dry-run). Most commands support --json for machine-readable output.\n"

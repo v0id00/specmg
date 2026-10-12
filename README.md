@@ -143,6 +143,13 @@ Prose, preserved verbatim.
 | `specmg stats [--json]` | Counts by status, open ACs/questions |
 | `specmg tree [<ref>]` | ASCII link graph (backlinks with a ref) |
 | `specmg evidence <ref> --ac AC-N --cmd "<shell>"` | Run command, store output, check AC on exit 0 |
+| `specmg verify <ref> [--all]` | Run backticked commands in all open ACs; check on exit 0, report pass/fail |
+| `specmg log <ref> "<decision>" [--rationale r]` | Append a row to the Decision Log |
+| `specmg search <text> [--case]` | Search titles, purposes and item texts (`--json` supported) |
+| `specmg export [--csv]` | Flat rows of every spec + item (JSON default) |
+| `specmg index [--write]` | Print or write `specs/INDEX.md` |
+| `specmg import [--dir d]` | Convert legacy sdd-format specs to specmg format (in place) |
+| `specmg completion bash\|zsh\|fish\|powershell` | Shell completion script (cobra built-in) |
 | `specmg skill` | Print a SKILL.md for AI agents |
 | `specmg version` | Print version |
 
@@ -176,6 +183,26 @@ $ echo $?
 point), stores stdout/stderr and the exit code in
 `specs/evidence/<id>-AC-N-<timestamp>.md`, and checks the AC **only on exit 0**
 (fail-closed). `--dry-run` prints what it would do without executing anything.
+
+## verify
+
+`specmg verify <ref>` scans every unchecked AC for a backtick-wrapped command
+(`\`true\` exits 0`), runs each via `sh -c`, checks the AC on exit 0 and reports
+`PASS`/`FAIL` per criterion plus a summary. Non-zero exits fail the command
+(exit 1) without checking that AC. ACs without a command are listed with
+`--all`. Like `evidence`, `--dry-run` never executes.
+
+```console
+$ specmg verify 0001
+PASS AC-1: specmg list
+FAIL AC-2: make lint (exit 1)
+verified 2 AC(s): 1 passed, 1 failed
+```
+
+## Decision Log
+
+`specmg log <ref> "<decision>" [--rationale "..."]` appends a dated row to the
+spec's Decision Log table (creating the table header if missing).
 
 ## Using with AI agents
 

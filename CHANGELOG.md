@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `verify <ref>` — run backticked commands in all open ACs, check on exit 0 (fail-closed), PASS/FAIL report
+- `log <ref> "<decision>" [--rationale]` — append a dated row to the Decision Log
+- `search <text>` — search titles, purposes and item texts, `--json` supported
+- `export [--csv]` — flat rows of every spec and item
+- `index [--write]` — print or write `specs/INDEX.md`
+- `import` — convert legacy sdd-format spec files to specmg format in place
+- `completion` — shell completion (cobra built-in)
+
 ## [0.1.0] - 2026-10-12
 
 First release.
