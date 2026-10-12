@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `completion` — shell completion (cobra built-in)
 - Pretty output mode: status badges (🟡🔵🟢🟣✅⚫🔴) and item icons (🔹 ☐/☑ ❓❗)
   on human output; `--plain` disables, `--json` never contains icons
+- `report [<ref>...]` — standalone HTML or PDF report for one or more specs
+  (`--format`, `--out`, `--title`); PDF embeds a system UTF-8 font when found
 
 ## [0.1.0] - 2026-10-12
 

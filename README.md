@@ -150,6 +150,7 @@ Prose, preserved verbatim.
 | `specmg index [--write]` | Print or write `specs/INDEX.md` |
 | `specmg import [--dir d]` | Convert legacy sdd-format specs to specmg format (in place) |
 | `specmg completion bash\|zsh\|fish\|powershell` | Shell completion script (cobra built-in) |
+| `specmg report [<ref>...] [--format html\|pdf] [--out f] [--title t]` | HTML/PDF report for given specs (default: all) |
 | `specmg skill` | Print a SKILL.md for AI agents |
 | `specmg version` | Print version |
 
@@ -209,6 +210,23 @@ verified 2 AC(s): 1 passed, 1 failed
 
 `specmg log <ref> "<decision>" [--rationale "..."]` appends a dated row to the
 spec's Decision Log table (creating the table header if missing).
+
+## report
+
+`specmg report [<ref>...]` renders one or more specs (default: all) as a
+standalone **HTML** file (`specmg-report.html`) or **PDF**
+(`--format pdf`, `specmg-report.pdf`). The HTML report carries status color
+badges and item icons; the PDF embeds a UTF-8 TTF font found on the system
+(DejaVu/Arial) so non-ASCII text renders — without a found font it falls back
+to Helvetica (ASCII only).
+
+```console
+$ specmg report --title "Sprint 3 Specs"          # specmg-report.html
+$ specmg report 0001 0002 -f pdf -o sprint3.pdf   # PDF, selected specs only
+```
+
+Pass `--out` for a custom path. `--dry-run` prints the target path without
+writing.
 
 ## Using with AI agents
 

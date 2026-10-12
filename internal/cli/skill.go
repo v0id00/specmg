@@ -47,6 +47,7 @@ const skillMarkdown = "---\n" +
 	"- **export [--csv]** — Flat rows of every spec and item\n" +
 	"- **index [--write]** — Print or write specs/INDEX.md\n" +
 	"- **import** — Convert legacy sdd-format specs to specmg format\n" +
+	"- **report [<ref>...] --format html|pdf --out <file>** — Render specs as a shareable HTML/PDF report\n" +
 	"- **init** — Create the specs/ directory if missing\n" +
 	"- **version** — Print version\n\n" +
 	"All mutating commands support dry-run mode (--dry-run). Most commands support --json for machine-readable output. Human output uses status badges and item icons; pass --plain for icon-free output (and --json never contains icons).\n"
