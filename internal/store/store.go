@@ -125,5 +125,20 @@ func Slugify(title string) string {
 			return -1
 		}
 	}, s)
-	return strings.Trim(s, "-")
+	s = strings.Join(strings.Fields(s), "-")
+	return strings.Trim(collapse(s, '-'), "-")
+}
+
+// collapse squeezes runs of sep into one.
+func collapse(s string, sep byte) string {
+	var b strings.Builder
+	prev := byte(0)
+	for i := 0; i < len(s); i++ {
+		if s[i] == sep && prev == sep {
+			continue
+		}
+		b.WriteByte(s[i])
+		prev = s[i]
+	}
+	return b.String()
 }
