@@ -42,7 +42,7 @@ jobs:
           if [ "$ARCHIVE" = "zip" ]; then
             (cd dist && zip -qr "$NAME.zip" "$NAME")
           else
-            tar -C dist -czf "$NAME.tar.gz" "$NAME"
+            tar -C dist -czf dist/"$NAME.tar.gz" "$NAME"
           fi
           rm -rf dist/"$NAME"
       - name: Checksums
