@@ -46,11 +46,11 @@ jobs:
           fi
           rm -rf dist/"$NAME"
       - name: Checksums
-        run: cd dist && sha256sum * > checksums.txt
+        run: cd dist && sha256sum * > checksums-${{ matrix.goos }}.txt
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.tar.gz
             dist/*.zip
-            dist/checksums.txt
+            dist/checksums-*.txt
