@@ -256,4 +256,15 @@ func TestStatsAndTreeAndSkill(t *testing.T) {
 	if !strings.Contains(out, "NEVER edit") || !strings.Contains(out, "specmg") {
 		t.Fatalf("skill output: %s", out)
 	}
+	// skill must document the real command surface (signatures caught drift before)
+	for _, want := range []string{
+		"specmg new \"<title>\"", "specmg req add <ref>", "check|uncheck <ref> AC-N",
+		"specmg link add <ref> --rel <rel> --to <target>", "specmg q add <ref>",
+		"specmg verify <ref>", "specmg report [<ref>...]", "specmg log <ref>",
+		"--dry-run", "status: draft",
+	} {
+		if !strings.Contains(out, want) {
+			t.Fatalf("skill missing %q", want)
+		}
+	}
 }
