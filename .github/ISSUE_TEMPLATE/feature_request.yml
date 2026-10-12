@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest a new subcommand, flag, or behavior
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that specmg can't do today? Describe the workflow, not just the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should it work? Consider specmg's conventions — subcommands, --json, --dry-run, canonical file format.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you tried or thought of.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Impact
+      options:
+        - label: Changes CLI flags or subcommands
+        - label: Changes the spec file format
+        - label: Changes output format (table/JSON)
+        - label: Affects safety behavior (--dry-run, evidence fail-closed, file writes)

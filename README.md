@@ -1,11 +1,73 @@
 # specmg
 
-Manage specs, requirements and acceptance criteria from the CLI — no manual
-editing of `specs/` files.
+[![ci](https://github.com/v0id00/specmg/actions/workflows/ci.yml/badge.svg)](https://github.com/v0id00/specmg/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/v0id00/specmg)](https://github.com/v0id00/specmg/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+CLI to manage **specs, requirements and acceptance criteria** — create, status,
+link, lint and verify them without opening a spec file in an editor. Built for
+both humans and AI agents.
+
+```console
+$ specmg new "Retry budget" --owner alice --tag backend
+created specs/0001-retry-budget.md
+$ specmg req add 0001 "The client SHALL retry at most 3 times."
+added REQ-1 to 0001-retry-budget
+$ specmg list
+ID    STATUS  TITLE          OWNER  REQS  OPEN-AC  OPEN-Q
+0001  draft   Retry budget   alice  1     0        0
 ```
-go build -o specmg ./cmd/specmg
+
+## Why
+
+Specs usually live in markdown files that drift out of date because editing
+them by hand is friction. `specmg` makes the CLI the interface: every change is
+validated (statuses, link targets, item ids), rendered in a canonical format,
+and stays git-friendly markdown you can still read and diff.
+
+## Install
+
+### Prebuilt binaries
+
+Download from the [latest release](https://github.com/v0id00/specmg/releases/latest)
+(`specmg_<version>_linux_amd64.tar.gz` or `specmg_<version>_windows_amd64.zip`),
+verify the checksum against `checksums-<os>.txt`, extract, and put `specmg` on
+your `PATH`.
+
+```console
+$ tar xzf specmg_0.1.0_linux_amd64.tar.gz
+$ ./specmg_0.1.0_linux_amd64/specmg version
+specmg 0.1.0
 ```
+
+### From source
+
+```console
+$ go install github.com/v0id00/specmg/cmd/specmg@latest
+```
+
+or clone and `make build` (binary lands in the repo root).
+
+## Quick start
+
+```console
+$ specmg init                                # creates specs/ (run inside your repo)
+$ specmg new "Retry budget" --owner alice --tag backend
+created specs/0001-retry-budget.md
+$ specmg req add 0001 "The client SHALL retry at most 3 times."
+$ specmg ac  add 0001 "`specmg list` exits 0 on an empty specs dir."
+$ specmg q   add 0001 "Should backoff be exponential?" --blocking
+$ specmg set 0001 --status in_review
+$ specmg q   resolve 0001 Q-1
+$ specmg set 0001 --status approved
+$ specmg evidence 0001 --ac AC-1 --cmd "specmg list"
+AC-1 verified (evidence: evidence/0001-AC-1-1791807070.md)
+$ specmg lint
+lint: ok
+```
+
+`specmg` finds `specs/` by walking up from the current directory (like git), or
+takes an explicit `--root <dir>`.
 
 ## Spec file format
 
@@ -52,47 +114,94 @@ Prose, preserved verbatim.
 | 2026-10-12 | Max 3 retries | Simplicity |
 ```
 
-Statuses: `draft | in_review | approved | implemented | verified | superseded | rejected`.
-Link rels: `implements | relates | blocks | depends_on | supersedes`.
-Files are owned by the CLI: every write re-renders the file in canonical form.
+- **Statuses**: `draft | in_review | approved | implemented | verified | superseded | rejected`
+- **Link rels**: `implements | relates | blocks | depends_on | supersedes`
+- `<ref>` arguments accept an id (`0001`), a slug (`retry-budget`) or the full
+  filename (`0001-retry-budget.md`).
+- Files are owned by the CLI: every write re-renders the file in canonical
+  form. `Purpose`, `Decision Log` and unknown sections are preserved verbatim;
+  hand-edited item formatting may be normalized.
+- Item ids (`REQ-N`, `AC-N`, `Q-N`, `L-N`) are assigned automatically
+  (`max + 1` per type).
 
 ## Commands
 
-```
-specmg init                                create specs/ if missing
-specmg new "<title>" [--owner x] [--tag t] create a Draft spec
-specmg get <id|slug> [--json]              full spec (human = raw markdown)
-specmg list [--status s]... [--owner o] [--tag t] [--json]
-specmg set <id|slug> [--status s] [--title t] [--owner o] [--tag t] [--slug s]
-specmg req add <ref> "<text>" | rm <ref> REQ-N | list <ref>
-specmg ac  add <ref> "<text>" | check|uncheck <ref> AC-N | list <ref>
-specmg link add <ref> --rel <rel> --to <target> | rm <ref> L-N | list <ref>
-specmg q   add <ref> "<text>" [--blocking] | resolve <ref> Q-N | list <ref>
-specmg supersede <ref> --by <other>
-specmg rm <ref>
-specmg lint [--strict] [--json]            consistency checks; exit 1 on errors
-specmg stats [--json]                      counts by status, open ACs/questions
-specmg tree [<ref>]                        link graph (ASCII)
-specmg evidence <ref> --ac AC-N --cmd "<shell>"   run cmd, store output, check AC on exit 0
-specmg skill                               print SKILL.md for AI agents
-specmg version
-```
+| Command | Description |
+|---------|-------------|
+| `specmg init` | Create `specs/` if missing |
+| `specmg new "<title>" [--owner x] [--tag t]` | Create a Draft spec |
+| `specmg get <ref> [--json]` | Full spec (human output = raw markdown) |
+| `specmg list [--status s]... [--owner o] [--tag t] [--json]` | Filterable overview |
+| `specmg set <ref> [--status s] [--title t] [--owner o] [--tag t] [--slug s]` | Update fields; `--slug` renames the file |
+| `specmg req add\|rm\|list` | Requirements CRUD |
+| `specmg ac add\|check\|uncheck\|list` | Acceptance criteria CRUD |
+| `specmg link add --rel <rel> --to <target>\|rm\|list` | Cross-spec links (target is validated) |
+| `specmg q add [--blocking]\|resolve\|list` | Open questions |
+| `specmg supersede <ref> --by <other>` | Retire a spec; adds a Decision Log row |
+| `specmg rm <ref>` | Delete a spec file |
+| `specmg lint [--strict] [--json]` | Consistency checks; exit 1 on errors |
+| `specmg stats [--json]` | Counts by status, open ACs/questions |
+| `specmg tree [<ref>]` | ASCII link graph (backlinks with a ref) |
+| `specmg evidence <ref> --ac AC-N --cmd "<shell>"` | Run command, store output, check AC on exit 0 |
+| `specmg skill` | Print a SKILL.md for AI agents |
+| `specmg version` | Print version |
 
-`<ref>` is an id (`0001`), slug (`retry-budget`) or full filename.
-Global flags: `--json`, `--dry-run` (all writes), `--root <dir>`, `-v`.
+**Global flags**: `--json` (machine-readable output on every command),
+`--dry-run` (all writes print what they would do instead), `--root <dir>`,
+`-v`.
 
-Exit codes: `0` ok, `1` error (incl. lint problems), `2` usage error.
+**Exit codes**: `0` ok · `1` error (including lint problems) · `2` usage error.
+
+## Lint
+
+`specmg lint` is CI-friendly (`--json` output, exit 1 on errors):
+
+- approved spec with an unresolved **blocking** question
+- dangling link target (points at a spec that no longer exists)
+- duplicate item numbers within a spec
+- `superseded` spec missing `superseded_by` (warning; error with `--strict`)
+
+```console
+$ specmg lint
+specs/0001-retry-budget.md: [error] approved spec has unresolved blocking Q-1
+error: lint: 1 problem(s)
+$ echo $?
+1
+```
 
 ## evidence
 
-Runs `--cmd` via `sh -c` (deliberate: full shell commands), stores stdout/stderr
-and exit code in `specs/evidence/<id>-AC-N-<ts>.md`, and checks the AC only on
-exit 0 (fail-closed). `--dry-run` never executes.
+`specmg evidence <ref> --ac AC-N --cmd "<shell>"` runs the command via `sh -c`
+(deliberate: full shell commands like `go test ./... && make lint` are the
+point), stores stdout/stderr and the exit code in
+`specs/evidence/<id>-AC-N-<timestamp>.md`, and checks the AC **only on exit 0**
+(fail-closed). `--dry-run` prints what it would do without executing anything.
+
+## Using with AI agents
+
+```console
+$ specmg skill > .claude/skills/specmg/SKILL.md   # or your agent's skill dir
+```
+
+The generated skill tells the agent to never edit `specs/` by hand, always use
+the CLI, never self-approve `Draft → Approved`, and only check ACs with real
+evidence.
 
 ## Development
 
-```
+```console
 make build   # go build -o specmg ./cmd/specmg
 make test    # go test ./...
 make lint    # gofmt -l . && go vet ./...
 ```
+
+Layout: `internal/spec` (model, markdown parse/render), `internal/store`
+(filesystem, atomic writes, id/slug resolution), `internal/cli` (cobra
+commands), `internal/output` (JSON/table).
+
+Releases: push a `v*` tag — CI runs tests and publishes linux/windows amd64
+archives with per-OS sha256 checksums.
+
+## License
+
+[MIT](LICENSE)

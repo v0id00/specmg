@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a crash, wrong output, or unexpected behavior
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: specmg version
+      description: Output of `specmg version`
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command
+      description: The full command you ran.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: spec
+    attributes:
+      label: Spec file involved
+      description: Paste the relevant specs/NNNN-*.md file (or the part that reproduces the problem). Sanitize anything sensitive.
+      render: markdown
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include the full error/output.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Anything else relevant — other commands tried, lint output, etc.
