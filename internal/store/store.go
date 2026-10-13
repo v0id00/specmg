@@ -53,7 +53,7 @@ func Load(root, dir, ref string) (*spec.Spec, error) {
 		return nil, err
 	}
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+		if e.IsDir() || !spec.IsSpecFilename(e.Name()) {
 			continue
 		}
 		stem := strings.TrimSuffix(e.Name(), ".md")
@@ -79,7 +79,7 @@ func List(root, dir string) ([]*spec.Spec, error) {
 	}
 	var out []*spec.Spec
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+		if e.IsDir() || !spec.IsSpecFilename(e.Name()) {
 			continue
 		}
 		b, err := os.ReadFile(filepath.Join(p, e.Name()))

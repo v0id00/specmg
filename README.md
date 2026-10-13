@@ -71,7 +71,9 @@ takes an explicit `--root <dir>`.
 
 ## Spec file format
 
-One spec per file: `specs/NNNN-<slug>.md` (4-digit zero-padded id).
+One spec per file: `specs/NNNN-<slug>.md` (4-digit zero-padded id). Anything
+else in `specs/` is a document, not a spec — `specs/README.md`,
+`specs/INDEX.md`, notes — and every command ignores it.
 
 ```markdown
 ---
@@ -148,7 +150,7 @@ Prose, preserved verbatim.
 | `specmg search <text> [--case]` | Search titles, purposes and item texts (`--json` supported) |
 | `specmg export [--csv]` | Flat rows of every spec + item (JSON default) |
 | `specmg index [--write]` | Print or write `specs/INDEX.md` |
-| `specmg import [--dir d]` | Convert legacy sdd-format specs to specmg format (in place) |
+| `specmg import [--dir d]` | Convert legacy sdd-format specs to specmg format (in place); numbered headings, wrapped items, `OQ`/`AC` ids handled |
 | `specmg completion bash\|zsh\|fish\|powershell` | Shell completion script (cobra built-in) |
 | `specmg report [<ref>...] [--format html\|pdf] [--out f] [--title t]` | HTML/PDF report for given specs (default: all) |
 | `specmg skill` | Print a SKILL.md for AI agents |

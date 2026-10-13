@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/v0id00/specmg/internal/output"
@@ -173,7 +172,7 @@ func loadAllSpecs(root string) ([]*spec.Spec, []parseErrInfo) {
 	var specs []*spec.Spec
 	var errs []parseErrInfo
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+		if e.IsDir() || !spec.IsSpecFilename(e.Name()) {
 			continue
 		}
 		data, err := os.ReadFile(filepath.Join(root, dir, e.Name()))
