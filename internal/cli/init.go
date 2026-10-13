@@ -29,7 +29,7 @@ var initCmd = &cobra.Command{
 	},
 }
 
-var version = "0.1.0"
+var version = "0.2.0"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",

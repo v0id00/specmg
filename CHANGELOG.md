@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-13
+
+### Fixed
+
+- `import` now understands real sdd files: numbered section headings
+  (`## 7. Acceptance Criteria`), items wrapped over several lines, `AC1 —` /
+  `OQ1 —` ids and resolved (`~~OQ1 — …~~ **Resolved …**`) questions. Original
+  item numbers and checkbox state are preserved, the `Last updated` line fills
+  `created`/`updated`, and the header block above the first heading survives as
+  `## Metadata` instead of becoming an unnamed section.
+- Documents in `specs/` that are not specs (`README.md`, `INDEX.md`, anything
+  not named `NNNN-slug.md`) are ignored by every command instead of failing the
+  run with `missing YAML frontmatter`.
+
 ### Added
 
 - `verify <ref>` — run backticked commands in all open ACs, check on exit 0 (fail-closed), PASS/FAIL report
